@@ -1,6 +1,7 @@
 <html>
   <head>
     <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
     <script>
@@ -18,7 +19,7 @@
           var position = el.getAttribute("position");
           // positionTmp.x = position.x + 0.1;
           // positionTmp.y = position.y + 0.001;
-          //   positionTmp.z = position.z - 0.005;
+          // positionTmp.z = position.z - 0.003;
           el.setAttribute("position", positionTmp);
         }
       });
@@ -73,21 +74,47 @@
       background="color: black"
       pool__enemy="mixin: enemy; size: 6"
       inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
+      environment="preset: tron; ground: flat; fog: 0.9; skyType: gradient; horizonColor: #420; gridColor: #c60; dressing: torii; dressingAmount: 60; dressingScale: 1; dressingUniformScale: true"
     >
       <a-assets>
         <a-mixin
           id="enemy"
           geometry="primitive: box"
           material="color: red"
+          sound="src: #explode; on: click; volume: 10"
           scale="0.5 0.5 0.5"
         ></a-mixin>
 
-        <a-mixin id="red" class="red-things"></a-mixin>
-        <a-mixin id="blue" material="color: blue"></a-mixin>
-      </a-assets>
+        <a-mixin id="enemy1-anim"></a-mixin>
 
-      <a-entity mixin="red cube"></a-entity>
-      <a-entity mixin="blue cube" class="blue-things"></a-entity>
+        <a-asset-item
+          id="enemy1"
+          src="../assets/models/enemy1.gltf"
+        ></a-asset-item>
+
+        <img id="chevron" src="../assets/textures/gray-chevron.jpg" />
+
+        <audio
+          id="zap"
+          src="../assets/sounds/sound_spark_Laser-Like_Synth_Basic_Laser2_04.mp3"
+          poolsize="5"
+          preload="auto"
+        ></audio>
+
+        <audio
+          id="zap2"
+          src="../assets/sounds/zapsplat_multimedia_game_zap_laser_011_24956.mp3"
+          poolsize="5"
+          preload="auto"
+        ></audio>
+
+        <audio
+          id="explode"
+          src="../assets/sounds/explosion_distant_003.mp3"
+          poolsize="5"
+          preload="auto"
+        ></audio>
+      </a-assets>
 
       <a-sphere id="left-point" color="red" radius="0.1"></a-sphere>
       <a-sphere id="right-point" color="blue" radius="0.1"></a-sphere>
@@ -96,8 +123,8 @@
       <a-sphere
         class="hoverable"
         position="0 1.25 -5"
-        radius="1.25"
-        color="#EF2D5E"
+        radius="0.25"
+        color="#f60"
       ></a-sphere>
 
       <a-box
@@ -105,29 +132,57 @@
         position="-1 0.5 -3"
         rotation="0 45 0"
         color="#4CC3D9"
+        position="0 1.6 0"
+        animation="property: position; to: 5 1.6 0; dur: 2000; easing: easeInOutQuad; elasticity: 400; loop: true; dir: alternate"
       ></a-box>
 
-      <a-cylinder
-        class="hoverable"
-        position="1 0.75 -3"
-        radius="0.5"
-        height="1.5"
-        color="#FFC65D"
-      ></a-cylinder>
+      <a-entity
+        gltf-model="#enemy1"
+        position="0 2 -3"
+        scale="0.5 0.5 0.5"
+        animation="property: rotation; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+      ></a-entity>
+
+      <a-entity
+        gltf-model="#enemy1"
+        position="1 1 -5"
+        scale="0.5 0.5 0.5"
+        rotation="0 0 0 "
+        animation="property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+      ></a-entity>
+
+      <a-entity
+        gltf-model="#enemy1"
+        position="-1 1 -6"
+        scale="0.5 0.5 0.5"
+        animation="property: rotation; delay: 1200; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+      ></a-entity>
 
       <a-plane
-        position="0 0 -20"
+        position="0 0.01 -20"
         rotation="-90 0 0"
         width="4"
         height="40"
         color="#7BC8A4"
+        material="src: #chevron; repeat: 4 40"
       ></a-plane>
 
-      <a-entity light="type: ambient; color: #666"></a-entity>
       <a-entity
-        light="type: directional; color: #FFF; intensity: 0.4"
-        position="-0.5 1 1"
-      ></a-entity>
+        position="0 0 -20"
+        rotation="0 0 0"
+        animation="property: rotation; to: 180 360 450; loop: true; dur: 5000"
+      >
+        <a-box position="5 0 0"></a-box>
+      </a-entity>
+
+      <!-- 
+
+        <a-entity light="type: ambient; color: #666"></a-entity>
+        <a-entity
+        light="type: directional; color: #FFF; intensity: 0.6"
+        position="-0.5 0.4 1"
+        ></a-entity>
+      -->
 
       <a-entity id="player" position="0 1.91 0" camera-move="speed: 1">
         <a-entity
@@ -154,6 +209,7 @@
           laser-controls="hand: left"
           raycaster="objects: .hoverable"
           line="color: red"
+          sound="src: #zap2; on: click"
         >
         </a-entity>
 
@@ -163,6 +219,7 @@
           laser-controls="hand: right"
           raycaster="objects: .hoverable"
           line="color: blue;"
+          sound="src: #zap; on: click"
         >
         </a-entity>
       </a-entity>
@@ -233,13 +290,16 @@
 
       setInterval(clickThing, 1000);
 
-      rightHand.addEventListener(`click`, function(evt) {
+      rightHand.addEventListener(`click`, shoot);
+      leftHand.addEventListener(`click`, shoot);
+
+      function shoot(evt) {
         console.log(evt.detail);
         const clickedEl = evt.detail.intersectedEl;
         if (clickedEl.classList.contains("enemy")) {
           sceneEl.components.pool__enemy.returnEntity(clickedEl);
         }
-      });
+      }
     </script>
   </body>
 </html>
