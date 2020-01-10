@@ -19,7 +19,7 @@
           var position = el.getAttribute("position");
           // positionTmp.x = position.x + 0.1;
           // positionTmp.y = position.y + 0.001;
-          // positionTmp.z = position.z - 0.003;
+          positionTmp.z = position.z - 0.003;
           el.setAttribute("position", positionTmp);
         }
       });
@@ -68,6 +68,24 @@
           }
         }
       });
+
+      AFRAME.registerComponent("modify-materials", {
+        init: function() {
+          // Wait for model to load.
+          this.el.addEventListener("model-loaded", () => {
+            // Grab the mesh / scene.
+            const obj = this.el.getObject3D("mesh");
+            // Go over the submeshes and modify materials we want.
+            obj.traverse(node => {
+              console.log(node);
+              if (node.name.indexOf("lamp") !== -1) {
+                node.material = new THREE.MeshBasicMaterial();
+                node.material.color.set("#f90");
+              }
+            });
+          });
+        }
+      });
     </script>
 
     <a-scene
@@ -79,17 +97,34 @@
       <a-assets>
         <a-mixin
           id="enemy"
-          geometry="primitive: box"
-          material="color: red"
+          gltf-model="#enemy1"
           sound="src: #explode; on: click; volume: 10"
           scale="0.5 0.5 0.5"
-        ></a-mixin>
+          animation="property: rotation; dur: 500"
+          modify-materials
+        >
+        </a-mixin>
+
+        <a-mixin
+          id="enemy2"
+          gltf-model="#enemy-model-2"
+          sound="src: #explode; on: click; volume: 10"
+          scale="0.5 0.5 0.5"
+          animation="property: rotation; dur: 500"
+          modify-materials
+        >
+        </a-mixin>
 
         <a-mixin id="enemy1-anim"></a-mixin>
 
         <a-asset-item
           id="enemy1"
           src="../assets/models/enemy1.gltf"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="enemy-model-2"
+          src="../assets/models/enemy2.gltf"
         ></a-asset-item>
 
         <img id="chevron" src="../assets/textures/gray-chevron.jpg" />
@@ -137,25 +172,12 @@
       ></a-box>
 
       <a-entity
-        gltf-model="#enemy1"
-        position="0 2 -3"
-        scale="0.5 0.5 0.5"
-        animation="property: rotation; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
-      ></a-entity>
-
-      <a-entity
-        gltf-model="#enemy1"
+        gltf-model="#enemy-model-2"
         position="1 1 -5"
         scale="0.5 0.5 0.5"
-        rotation="0 0 0 "
+        rotation="0 0 0"
         animation="property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
-      ></a-entity>
-
-      <a-entity
-        gltf-model="#enemy1"
-        position="-1 1 -6"
-        scale="0.5 0.5 0.5"
-        animation="property: rotation; delay: 1200; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+        modify-materials
       ></a-entity>
 
       <a-plane
@@ -175,12 +197,12 @@
         <a-box position="5 0 0"></a-box>
       </a-entity>
 
+      <a-entity light="type: ambient; color: #222"></a-entity>
       <!-- 
 
-        <a-entity light="type: ambient; color: #666"></a-entity>
         <a-entity
-        light="type: directional; color: #FFF; intensity: 0.6"
-        position="-0.5 0.4 1"
+        light="type: directional; color: #FFF; intensity: 0.3"
+        position="-0.5 1 1"
         ></a-entity>
       -->
 
@@ -253,27 +275,23 @@
 
       let posBox = 3;
 
-      const leftHand = document.querySelector("#left-hand");
-      leftHand.addEventListener("triggerdown", clickThing);
-
-      const cursor = document.querySelector("#cursor");
-      cursor.addEventListener("click", clickThing);
-
-      function clickThing(event) {
+      function addEnemy(event) {
         entityEl.setAttribute("material", "color", "red");
 
         var el = sceneEl.components.pool__enemy.requestEntity();
         if (el) {
-          //   el.setAttribute("geometry", { primitive: "box" }, true);
-          //   el.setAttribute("scale", { x: 0.2, y: 0.2, z: 0.2 });
           el.classList.add("hoverable");
           el.classList.add("enemy");
-          //   el.setAttribute("material", "color", "red");
-          //   el.setAttribute("mixin", "enemy");
+
+          el.setAttribute(
+            "animation",
+            // "property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+            "property: rotation;"
+          );
 
           el.setAttribute("position", {
-            x: 3,
-            y: 0.75,
+            x: Math.random() * 6 - 3,
+            y: 2 + Math.random() * 2,
             z: -posBox
           });
 
@@ -288,7 +306,7 @@
         // player.object3D.position.set(0, 1.91, 0);
       });
 
-      setInterval(clickThing, 1000);
+      setInterval(addEnemy, 2000);
 
       rightHand.addEventListener(`click`, shoot);
       leftHand.addEventListener(`click`, shoot);
