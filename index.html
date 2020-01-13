@@ -173,15 +173,8 @@
 
         <audio
           id="zap"
-          src="assets/sounds/sound_spark_Laser-Like_Synth_Basic_Laser2_04.mp3"
-          poolsize="5"
-          preload="auto"
-        ></audio>
-
-        <audio
-          id="zap2"
-          src="assets/sounds/zapsplat_multimedia_game_zap_laser_011_24956.mp3"
-          poolsize="5"
+          src="assets/sounds/Gun Silencer-SoundBible.com-193331132.mp3"
+          poolsize="2"
           preload="auto"
         ></audio>
 
@@ -258,7 +251,7 @@
             id="cursor"
             cursor="fuse: false"
             position="0 0 -1"
-            visible="true"
+            visible="false"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
             material="color: black; shader: flat"
             raycaster="objects: .hoverable"
@@ -273,8 +266,8 @@
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: left"
           raycaster="objects: .hoverable"
-          line="color: red"
-          sound="src: #zap2; on: click"
+          line="color: #5d4a4e"
+          sound="src: #zap; on: triggerdown"
         >
         </a-entity>
 
@@ -285,8 +278,8 @@
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: right"
           raycaster="objects: .hoverable"
-          line="color: blue;"
-          sound="src: #zap; on: click"
+          line="color: #5d4a4e;"
+          sound="src: #zap; on: triggerdown"
         >
         </a-entity>
       </a-entity>
