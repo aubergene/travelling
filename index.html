@@ -7,6 +7,10 @@
   </head>
   <body>
     <script>
+      const MAX_SPEED = 2;
+      const ACCELERATION = 0.01;
+      let speed = 0;
+
       AFRAME.registerComponent("camera-move", {
         schema: {
           speed: { type: "number", default: 0.01 }
@@ -22,7 +26,24 @@
           // positionTmp.x = position.x + 0.1;
           // positionTmp.y = position.y + 0.001;
           // positionTmp.z = position.z - 0.003;
+          positionTmp.z = position.z - speed;
           el.setAttribute("position", positionTmp);
+        }
+      });
+
+      AFRAME.registerComponent("accelerate-listener", {
+        init() {
+          this.el.addEventListener("gripdown", evt => {
+            speed = Math.min(MAX_SPEED, speed + ACCELERATION);
+          });
+        }
+      });
+
+      AFRAME.registerComponent("decelerate-listener", {
+        init() {
+          this.el.addEventListener("gripdown", evt => {
+            speed = Math.max(0, speed - ACCELERATION);
+          });
         }
       });
 
@@ -247,6 +268,7 @@
 
         <a-entity
           id="left-hand"
+          accelerate-listener
           oculus-touch-controls="hand: left"
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: left"
@@ -258,6 +280,7 @@
 
         <a-entity
           id="right-hand"
+          decelerate-listener
           oculus-touch-controls="hand: right"
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: right"
