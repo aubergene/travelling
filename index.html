@@ -1,5 +1,6 @@
 <html>
   <head>
+    <title>TRAVELLING</title>
     <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
     <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
     <script src="https://unpkg.com/aframe-haptics-component/dist/aframe-haptics-component.min.js"></script>
@@ -20,7 +21,7 @@
           var position = el.getAttribute("position");
           // positionTmp.x = position.x + 0.1;
           // positionTmp.y = position.y + 0.001;
-          positionTmp.z = position.z - 0.003;
+          // positionTmp.z = position.z - 0.003;
           el.setAttribute("position", positionTmp);
         }
       });
@@ -82,6 +83,9 @@
               if (node.name.indexOf("lamp") !== -1) {
                 node.material = new THREE.MeshBasicMaterial();
                 node.material.color.set("#f90");
+                // node.material = new THREE.MeshLambertMaterial();
+                // node.material.emissive.copy(new THREE.Color("#0c0"));
+                // node.material.emissiveIntensity = data.intensity;
               }
             });
           });
@@ -91,9 +95,25 @@
 
     <a-scene
       background="color: black"
-      pool__enemy="mixin: enemy; size: 6"
+      pool__enemy="mixin: enemy; size: 8"
       inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
-      environment="preset: tron; ground: flat; fog: 0.9; skyType: gradient; horizonColor: #420; gridColor: #c60; dressing: torii; dressingAmount: 60; dressingScale: 1; dressingUniformScale: true"
+      environment="
+        seed: 2;
+        ground: flat; 
+        fog: 0; 
+        skyType: gradient; 
+        playArea: 0;
+        horizonColor: #ffcad4; 
+        ground: flat;
+        groundTexture: none;
+        groundColor: #d8e2dc;
+        grid: 2x2;
+        gridColor: #fff; 
+        dressing: trees; 
+        dressingColor: #f4acb7;
+        dressingAmount: 300; 
+        dressingScale: 14; 
+      "
     >
       <a-assets>
         <a-mixin
@@ -182,12 +202,11 @@
       ></a-entity>
 
       <a-plane
-        position="0 0.01 -20"
+        position="0 0.01 0"
         rotation="-90 0 0"
         width="4"
-        height="40"
-        color="#7BC8A4"
-        material="src: #chevron; repeat: 4 40"
+        height="202"
+        color="#f4acb7"
       ></a-plane>
 
       <a-entity
@@ -198,8 +217,8 @@
         <a-box position="5 0 0"></a-box>
       </a-entity>
 
-      <a-entity light="type: ambient; color: #222"></a-entity>
       <!-- 
+        <a-entity light="type: ambient; color: #222"></a-entity>
 
         <a-entity
         light="type: directional; color: #FFF; intensity: 0.3"
@@ -207,7 +226,7 @@
         ></a-entity>
       -->
 
-      <a-entity id="player" position="0 1.91 0" camera-move="speed: 1">
+      <a-entity id="player" position="0 1.91 50" camera-move="speed: 1">
         <a-entity
           id="camera"
           camera
@@ -216,9 +235,9 @@
         >
           <a-entity
             id="cursor"
-            cursor="fuse: true; fuseTimeout: 500"
+            cursor="fuse: false"
             position="0 0 -1"
-            visible="false"
+            visible="true"
             geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
             material="color: black; shader: flat"
             raycaster="objects: .hoverable"
