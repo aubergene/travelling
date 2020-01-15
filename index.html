@@ -147,6 +147,12 @@
         >
         </a-mixin>
 
+        <a-mixin
+          id="fade-out-text"
+          animation="property: components.text.material.uniforms.opacity.value; to: 0; delay: 8000; dur: 3000;"
+        >
+        </a-mixin>
+
         <a-mixin id="enemy1-anim"></a-mixin>
 
         <a-asset-item
@@ -222,11 +228,34 @@
       <a-entity
         gltf-model="#spinner"
         scale="8 6 8"
-        position="0 7 45"
+        position="0 7 40"
         rotation="200 0 0"
         color="#346abf"
         animation="property: rotation; to: 160 1000 0; dur: 30000; easing: easeInOutQuad; loop: true; dir: alternate"
       ></a-entity>
+
+      <a-entity position="0 0.5 47">
+        <a-entity
+          position="0 2.8 0"
+          text="color: #073e6b; align: center; width: 16; value: TRAVELLING;"
+          mixin="fade-out-text"
+        ></a-entity>
+        <a-entity
+          text="color: #073e6b; align: center; width: 6; value: Julian Burgess;"
+          position="0 2.3 0"
+          mixin="fade-out-text"
+        ></a-entity>
+        <a-entity
+          text="color: #073e6b; align: center; width: 4; value: IS71081B: 3D Virtual Environments and Animation;"
+          position="0 2 0"
+          mixin="fade-out-text"
+        ></a-entity>
+        <a-entity
+          text="color: #073e6b; align: center; width: 4; value: Goldsmiths 2020;"
+          position="0 1.8 0"
+          mixin="fade-out-text"
+        ></a-entity>
+      </a-entity>
 
       <a-entity id="player" position="0 1.91 50" camera-move="speed: 1">
         <a-entity
@@ -257,6 +286,12 @@
           line="color: #5d4a4e"
           sound="src: #zap; on: triggerdown"
         >
+          <a-entity position="0 0 -0.1" rotation="-90 0 0">
+            <a-entity
+              rotation="0 180 0"
+              text="color: #073e6b; align: center; width: 0.5; value: Trigger to grow\nGrip to speed up;"
+            ></a-entity>
+          </a-entity>
         </a-entity>
 
         <a-entity
@@ -269,6 +304,12 @@
           line="color: #5d4a4e;"
           sound="src: #zap; on: triggerdown"
         >
+          <a-entity position="0 0 -0.1" rotation="-90 0 0">
+            <a-entity
+              rotation="0 180 0"
+              text="color: #073e6b; align: center; width: 0.5; value: Trigger to plant\nGrip to slow down;"
+            ></a-entity>
+          </a-entity>
         </a-entity>
       </a-entity>
     </a-scene>
