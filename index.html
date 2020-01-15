@@ -1,9 +1,9 @@
 <html>
   <head>
     <title>TRAVELLING</title>
-    <script src="https://aframe.io/releases/1.0.0/aframe.min.js"></script>
-    <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
-    <script src="https://unpkg.com/aframe-haptics-component/dist/aframe-haptics-component.min.js"></script>
+    <script src="js/aframe.min.js"></script>
+    <script src="js/aframe-environment-component.min.js"></script>
+    <script src="js/aframe-haptics-component.min.js"></script>
   </head>
   <body>
     <script>
@@ -115,9 +115,7 @@
 
     <a-scene
       background="color: black"
-      pool__enemy="mixin: enemy; size: 8"
-      inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
-      google-poly="api_key: AIzaSyAJTX3H29bVUZOK6hB2vSlhiywNKH5YIs4"
+      inspector="url: js/aframe-inspector.min.js"
       environment="
         seed: 8;
         ground: flat; 
@@ -138,31 +136,24 @@
     >
       <a-assets>
         <a-mixin
-          id="enemy"
-          gltf-model="#enemy1"
-          sound="src: #explode; on: click; volume: 10"
-          scale="0.5 0.5 0.5"
-          animation="property: rotation; dur: 500"
-          modify-materials
-        >
-        </a-mixin>
-
-        <a-mixin
           id="fade-out-text"
           animation="property: components.text.material.uniforms.opacity.value; to: 0; delay: 8000; dur: 3000;"
         >
         </a-mixin>
 
-        <a-mixin id="enemy1-anim"></a-mixin>
-
-        <a-asset-item
-          id="enemy1"
-          src="assets/models/enemy1.gltf"
-        ></a-asset-item>
-
         <a-asset-item
           id="spinner"
           src="assets/models/spinner.gltf"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="tree"
+          src="assets/models/tree-google-poly/tree01.gltf"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="apple"
+          src="assets/models/apple-google-poly/Apple.gltf"
         ></a-asset-item>
 
         <audio
@@ -180,12 +171,13 @@
         ></audio>
       </a-assets>
 
-      <a-sphere
+      <!-- <a-sphere
         class="hoverable"
-        position="0 1.25 -5"
-        radius="0.5"
+        position="-3 1.25 45"
+        radius="2.5"
         color="#95b88c"
-      ></a-sphere>
+        metalness="0.2"
+      ></a-sphere> -->
 
       <a-plane
         id="travel-path"
@@ -234,6 +226,19 @@
         animation="property: rotation; to: 160 1000 0; dur: 30000; easing: easeInOutQuad; loop: true; dir: alternate"
       ></a-entity>
 
+      <a-entity
+        gltf-model="#tree"
+        scale="0.01 0.01 0.01"
+        position="3 0 45"
+      ></a-entity>
+
+      <a-entity
+        gltf-model="#apple"
+        class="apple-tree"
+        scale="0.001 0.001 0.001"
+        position="3 0 46"
+      ></a-entity>
+
       <a-entity position="0 0.5 47">
         <a-entity
           position="0 2.8 0"
@@ -255,7 +260,17 @@
           position="0 1.8 0"
           mixin="fade-out-text"
         ></a-entity>
+
+        <a-entity
+          text="color: #073e6b; align: center; width: 4; value: Turn your hands towards you for instructions;"
+          position="0 1.4 0"
+        ></a-entity>
       </a-entity>
+
+      <a-entity
+        text="color: #073e6b; align: center; width: 4; value: Stop!\nYou have reached the end of the world and if you go over the edge you will die in real life!;"
+        position="0 1.4 -100"
+      ></a-entity>
 
       <a-entity id="player" position="0 1.91 50" camera-move="speed: 1">
         <a-entity
@@ -282,14 +297,14 @@
           oculus-touch-controls="hand: left"
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: left"
-          raycaster="objects: .hoverable"
+          raycaster="objects: .apple-tree"
           line="color: #5d4a4e"
           sound="src: #zap; on: triggerdown"
         >
           <a-entity position="0 0 -0.1" rotation="-90 0 0">
             <a-entity
               rotation="0 180 0"
-              text="color: #073e6b; align: center; width: 0.5; value: Trigger to grow\nGrip to speed up;"
+              text="color: #073e6b; align: center; width: 0.5; value: Pull trigger to grow apple\nTap middle finger grip to speed up;"
             ></a-entity>
           </a-entity>
         </a-entity>
@@ -307,7 +322,7 @@
           <a-entity position="0 0 -0.1" rotation="-90 0 0">
             <a-entity
               rotation="0 180 0"
-              text="color: #073e6b; align: center; width: 0.5; value: Trigger to plant\nGrip to slow down;"
+              text="color: #073e6b; align: center; width: 0.5; value: Pull trigger to plant tree\nTap middle finger grip to slow down;"
             ></a-entity>
           </a-entity>
         </a-entity>
@@ -319,39 +334,6 @@
 
       const player = document.querySelector("#player");
       const camera = document.querySelector("#camera");
-
-      let posBox = 3;
-
-      function addEnemy(event) {
-        var el = sceneEl.components.pool__enemy.requestEntity();
-        if (el) {
-          el.classList.add("hoverable");
-          el.classList.add("enemy");
-
-          el.setAttribute("visible", true);
-
-          // el.setAttribute(
-          //   "animation",
-          //   // "property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
-          //   "property: rotation;"
-          // );
-
-          el.setAttribute(
-            "animation",
-            "property: rotation; to: 0 360 0; loop: true; dur: 10000"
-          );
-
-          el.setAttribute("position", {
-            x: Math.random() * 6 - 3,
-            y: 2 + Math.random() * 2,
-            z: -posBox
-          });
-
-          posBox += 0.65;
-        }
-      }
-
-      setInterval(addEnemy, 2000);
 
       const rightHand = document.querySelector("#right-hand");
       rightHand.addEventListener(`click`, shoot);
@@ -365,37 +347,85 @@
         if (clickedEl.classList.contains("environmentGround")) {
           addPlant(evt.detail.intersection.point);
         }
-        w;
-        if (clickedEl.classList.contains("enemy")) {
-          clickedEl.setAttribute("visible", false);
-          sceneEl.components.pool__enemy.returnEntity(clickedEl);
+        if (clickedEl.classList.contains("apple-tree")) {
+          addApple(evt.detail.intersection);
         }
       }
 
       function addPlant(point) {
         const entityEl = document.createElement("a-entity");
         sceneEl.appendChild(entityEl);
-        const radius = 0.1 + Math.random();
+        const size = 0.001 + Math.random() * 0.02;
 
-        entityEl.setAttribute("geometry", {
-          primitive: "sphere",
-          radius
-        });
+        // entityEl.setAttribute("geometry", {
+        //   primitive: "sphere",
+        //   radius: size
+        // });
+
+        entityEl.setAttribute("gltf-model", "#tree");
 
         const growDuration = 20000;
 
         point.y += 0.1;
 
-        entityEl.setAttribute("material", "color", "#346abf");
+        // entityEl.setAttribute("material", "color", "#346abf");
+        entityEl.setAttribute("class", "apple-tree");
         entityEl.setAttribute("position", point);
-        entityEl.setAttribute("scale", "0.1 0.1 0.1");
+        entityEl.setAttribute("scale", "0 0 0");
+        entityEl.setAttribute("rotation", `0 ${Math.random() * 360} 0`);
+        // scale="0.01 0.01 0.01"
+
         entityEl.setAttribute(
           "animation",
-          `property: scale; to: 1 1 1; dur: ${growDuration}; easing: easeInOutQuad;`
+          `property: scale; to: ${[size, size, size].join(
+            " "
+          )}; dur: ${growDuration}; easing: easeInOutQuad;`
         );
         entityEl.setAttribute(
           "animation__2",
-          `property: position; to: ${point.x} ${point.y + radius} ${
+          `property: position; to: ${point.x} ${point.y + size} ${
+            point.z
+          }; dur: ${growDuration}; easing: easeInOutCubic;`
+        );
+      }
+
+      function addApple(intersection) {
+        const point = intersection.point;
+        const entityEl = document.createElement("a-entity");
+        sceneEl.appendChild(entityEl);
+        const size = 0.001 + Math.random() * 0.001;
+
+        // entityEl.setAttribute("geometry", {
+        //   primitive: "sphere",
+        //   radius: size
+        // });
+
+        entityEl.setAttribute("gltf-model", "#apple");
+
+        const growDuration = 2000;
+
+        point.z += 0.2;
+
+        console.log(intersection);
+        const n = intersection.face.normal;
+        // const rotation = [n.x, n.y, n.z].join(" ")
+        const f = intersection.face;
+        const rotation = [f.a, f.b, f.c].join(" ");
+
+        entityEl.setAttribute("position", point);
+        entityEl.setAttribute("scale", "0 0 0");
+        entityEl.setAttribute("rotation", rotation);
+        console.log(rotation);
+
+        entityEl.setAttribute(
+          "animation",
+          `property: scale; to: ${[size, size, size].join(
+            " "
+          )}; dur: ${growDuration}; easing: easeInOutQuad;`
+        );
+        entityEl.setAttribute(
+          "animation__2",
+          `property: position; to: ${point.x} ${point.y + size} ${
             point.z
           }; dur: ${growDuration}; easing: easeInOutCubic;`
         );
