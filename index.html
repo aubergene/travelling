@@ -9,6 +9,8 @@
     <script>
       const MAX_SPEED = 2;
       const ACCELERATION = 0.01;
+      const PLAYER_HEIGHT = 1.91;
+
       let speed = 0;
 
       AFRAME.registerComponent("camera-move", {
@@ -19,13 +21,10 @@
           var el = this.el;
           var positionTmp = (this.positionTmp = this.positionTmp || {
             x: 0,
-            y: 2,
+            y: PLAYER_HEIGHT,
             z: 0
           });
           var position = el.getAttribute("position");
-          // positionTmp.x = position.x + 0.1;
-          // positionTmp.y = position.y + 0.001;
-          // positionTmp.z = position.z - 0.003;
           positionTmp.z = position.z - speed;
           el.setAttribute("position", positionTmp);
         }
@@ -47,50 +46,50 @@
         }
       });
 
-      AFRAME.registerComponent("raycaster-listen", {
-        init: function() {
-          // Use events to figure out what raycaster is listening so we don't have to
-          // hardcode the raycaster.
-          this.el.addEventListener("raycaster-intersected", evt => {
-            this.raycaster = evt.detail.el;
-          });
-          this.el.addEventListener("raycaster-intersected-cleared", evt => {
-            this.raycaster = null;
-          });
+      // AFRAME.registerComponent("raycaster-listen", {
+      //   init: function() {
+      //     // Use events to figure out what raycaster is listening so we don't have to
+      //     // hardcode the raycaster.
+      //     this.el.addEventListener("raycaster-intersected", evt => {
+      //       this.raycaster = evt.detail.el;
+      //     });
+      //     this.el.addEventListener("raycaster-intersected-cleared", evt => {
+      //       this.raycaster = null;
+      //     });
 
-          this.leftPoint = document.querySelector("#left-point");
-          this.rightPoint = document.querySelector("#right-point");
-          this.viewPoint = document.querySelector("#view-point");
-        },
+      //     this.leftPoint = document.querySelector("#left-point");
+      //     this.rightPoint = document.querySelector("#right-point");
+      //     this.viewPoint = document.querySelector("#view-point");
+      //   },
 
-        tick: function() {
-          if (!this.raycaster) {
-            return;
-          } // Not intersecting.
+      //   tick: function() {
+      //     if (!this.raycaster) {
+      //       return;
+      //     } // Not intersecting.
 
-          let intersection = this.raycaster.components.raycaster.getIntersection(
-            this.el
-          );
-          if (!intersection) {
-            return;
-          }
-          //   console.log(this.raycaster);
-          //   console.log(intersection.point);
-          const p = intersection.point;
+      //     let intersection = this.raycaster.components.raycaster.getIntersection(
+      //       this.el
+      //     );
+      //     if (!intersection) {
+      //       return;
+      //     }
+      //     //   console.log(this.raycaster);
+      //     //   console.log(intersection.point);
+      //     const p = intersection.point;
 
-          if (this.raycaster.id === "left-hand") {
-            this.leftPoint.object3D.position.set(p.x, p.y, p.z);
-          }
+      //     if (this.raycaster.id === "left-hand") {
+      //       this.leftPoint.object3D.position.set(p.x, p.y, p.z);
+      //     }
 
-          if (this.raycaster.id === "right-hand") {
-            this.rightPoint.object3D.position.set(p.x, p.y, p.z);
-          }
+      //     if (this.raycaster.id === "right-hand") {
+      //       this.rightPoint.object3D.position.set(p.x, p.y, p.z);
+      //     }
 
-          if (this.raycaster.id === "cursor") {
-            this.viewPoint.object3D.position.set(p.x, p.y, p.z);
-          }
-        }
-      });
+      //     if (this.raycaster.id === "cursor") {
+      //       this.viewPoint.object3D.position.set(p.x, p.y, p.z);
+      //     }
+      //   }
+      // });
 
       AFRAME.registerComponent("modify-materials", {
         init: function() {
@@ -100,7 +99,7 @@
             const obj = this.el.getObject3D("mesh");
             // Go over the submeshes and modify materials we want.
             obj.traverse(node => {
-              console.log(node);
+              // console.log(node);
               if (node.name.indexOf("lamp") !== -1) {
                 node.material = new THREE.MeshBasicMaterial();
                 node.material.color.set("#f90");
@@ -118,10 +117,11 @@
       background="color: black"
       pool__enemy="mixin: enemy; size: 8"
       inspector="https://cdn.jsdelivr.net/gh/aframevr/aframe-inspector@master/dist/aframe-inspector.min.js"
+      google-poly="api_key: AIzaSyAJTX3H29bVUZOK6hB2vSlhiywNKH5YIs4"
       environment="
-        seed: 2;
+        seed: 8;
         ground: flat; 
-        fog: 0; 
+        fog: 0.9; 
         skyType: gradient; 
         playArea: 0;
         horizonColor: #ffcad4; 
@@ -133,23 +133,13 @@
         dressing: trees; 
         dressingColor: #f4acb7;
         dressingAmount: 300; 
-        dressingScale: 14; 
+        dressingScale: 12w; 
       "
     >
       <a-assets>
         <a-mixin
           id="enemy"
           gltf-model="#enemy1"
-          sound="src: #explode; on: click; volume: 10"
-          scale="0.5 0.5 0.5"
-          animation="property: rotation; dur: 500"
-          modify-materials
-        >
-        </a-mixin>
-
-        <a-mixin
-          id="enemy2"
-          gltf-model="#enemy-model-2"
           sound="src: #explode; on: click; volume: 10"
           scale="0.5 0.5 0.5"
           animation="property: rotation; dur: 500"
@@ -165,11 +155,9 @@
         ></a-asset-item>
 
         <a-asset-item
-          id="enemy-model-2"
-          src="assets/models/enemy2.gltf"
+          id="spinner"
+          src="assets/models/spinner.gltf"
         ></a-asset-item>
-
-        <img id="chevron" src="assets/textures/gray-chevron.jpg" />
 
         <audio
           id="zap"
@@ -186,36 +174,15 @@
         ></audio>
       </a-assets>
 
-      <a-sphere id="left-point" color="red" radius="0.1"></a-sphere>
-      <a-sphere id="right-point" color="blue" radius="0.1"></a-sphere>
-      <a-sphere id="view-point" color="green" radius="0.1"></a-sphere>
-
       <a-sphere
         class="hoverable"
         position="0 1.25 -5"
-        radius="0.25"
-        color="#f60"
+        radius="0.5"
+        color="#95b88c"
       ></a-sphere>
 
-      <a-box
-        class="hoverable"
-        position="-1 0.5 -3"
-        rotation="0 45 0"
-        color="#4CC3D9"
-        position="0 1.6 0"
-        animation="property: position; to: 5 1.6 0; dur: 2000; easing: easeInOutQuad; elasticity: 400; loop: true; dir: alternate"
-      ></a-box>
-
-      <a-entity
-        gltf-model="#enemy-model-2"
-        position="1 1 -5"
-        scale="0.5 0.5 0.5"
-        rotation="0 0 0"
-        animation="property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
-        modify-materials
-      ></a-entity>
-
       <a-plane
+        id="travel-path"
         position="0 0.01 0"
         rotation="-90 0 0"
         width="4"
@@ -224,21 +191,42 @@
       ></a-plane>
 
       <a-entity
-        position="0 0 -20"
-        rotation="0 0 0"
-        animation="property: rotation; to: 180 360 450; loop: true; dur: 5000"
+        position="6 8 0"
+        animation="property: rotation; delay: 2000; to: 240 360 450; loop: true; easing: easeInOutQuad; dur: 10000; dir: alternate"
       >
-        <a-box position="5 0 0"></a-box>
+        <a-entity
+          gltf-model="#spinner"
+          scale="4 4 4"
+          position="4 4 0"
+          color="#346abf"
+          animation="property: rotation; to: 0 270 0; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate"
+          modify-materials
+        ></a-entity>
       </a-entity>
 
-      <!-- 
-        <a-entity light="type: ambient; color: #222"></a-entity>
-
+      <a-entity
+        position="-8 12 5"
+        rotation="180 0 0"
+        animation="property: rotation; delay: 2000; to: 180 240 680; loop: true; easing: easeInOutQuad; dur: 12000; dir: alternate"
+      >
         <a-entity
-        light="type: directional; color: #FFF; intensity: 0.3"
-        position="-0.5 1 1"
+          gltf-model="#spinner"
+          scale="4 4 4"
+          position="4 4 0"
+          color="#346abf"
+          animation="property: rotation; to: 0 270 0; dur: 3000; easing: easeInOutQuad; loop: true; dir: alternate"
+          modify-materials
         ></a-entity>
-      -->
+      </a-entity>
+
+      <a-entity
+        gltf-model="#spinner"
+        scale="8 6 8"
+        position="0 7 45"
+        rotation="200 0 0"
+        color="#346abf"
+        animation="property: rotation; to: 160 1000 0; dur: 30000; easing: easeInOutQuad; loop: true; dir: alternate"
+      ></a-entity>
 
       <a-entity id="player" position="0 1.91 50" camera-move="speed: 1">
         <a-entity
@@ -277,7 +265,7 @@
           oculus-touch-controls="hand: right"
           haptics="events: triggerdown; dur: 50; force: 0.5"
           laser-controls="hand: right"
-          raycaster="objects: .hoverable"
+          raycaster="objects: .environmentGround"
           line="color: #5d4a4e;"
           sound="src: #zap; on: triggerdown"
         >
@@ -288,43 +276,28 @@
     <script>
       var sceneEl = document.querySelector("a-scene");
 
-      var entityEl = document.createElement("a-entity");
-      sceneEl.appendChild(entityEl);
-
-      entityEl.setAttribute("geometry", {
-        primitive: "cylinder",
-        height: 0.1,
-        radius: 5
-      });
-
-      entityEl.setAttribute("position", {
-        x: 0,
-        y: -0.1,
-        z: 0
-      });
-
-      entityEl.setAttribute("material", "color", "red");
-      entityEl.setAttribute("material", "opacity", "0.1");
-      entityEl.setAttribute("geometry", { primitive: "cylinder" }, true);
-
       const player = document.querySelector("#player");
       const camera = document.querySelector("#camera");
-      //   camera.object3D.position.set(trackRadius, 1.91, 0);
 
       let posBox = 3;
 
       function addEnemy(event) {
-        entityEl.setAttribute("material", "color", "red");
-
         var el = sceneEl.components.pool__enemy.requestEntity();
         if (el) {
           el.classList.add("hoverable");
           el.classList.add("enemy");
 
+          el.setAttribute("visible", true);
+
+          // el.setAttribute(
+          //   "animation",
+          //   // "property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
+          //   "property: rotation;"
+          // );
+
           el.setAttribute(
             "animation",
-            // "property: rotation; delay: 2400; to: 0 270 0; dur: 2000; easing: easeInOutQuad; loop: true; dir: alternate"
-            "property: rotation;"
+            "property: rotation; to: 0 360 0; loop: true; dur: 10000"
           );
 
           el.setAttribute("position", {
@@ -337,24 +310,54 @@
         }
       }
 
-      const rightHand = document.querySelector("#right-hand");
-      rightHand.addEventListener("triggerdown", function(event) {
-        entityEl.setAttribute("material", "color", "blue");
-
-        // player.object3D.position.set(0, 1.91, 0);
-      });
-
       setInterval(addEnemy, 2000);
 
+      const rightHand = document.querySelector("#right-hand");
       rightHand.addEventListener(`click`, shoot);
+
+      const leftHand = document.querySelector("#left-hand");
       leftHand.addEventListener(`click`, shoot);
 
       function shoot(evt) {
-        console.log(evt.detail);
         const clickedEl = evt.detail.intersectedEl;
+
+        if (clickedEl.classList.contains("environmentGround")) {
+          addPlant(evt.detail.intersection.point);
+        }
+        w;
         if (clickedEl.classList.contains("enemy")) {
+          clickedEl.setAttribute("visible", false);
           sceneEl.components.pool__enemy.returnEntity(clickedEl);
         }
+      }
+
+      function addPlant(point) {
+        const entityEl = document.createElement("a-entity");
+        sceneEl.appendChild(entityEl);
+        const radius = 0.1 + Math.random();
+
+        entityEl.setAttribute("geometry", {
+          primitive: "sphere",
+          radius
+        });
+
+        const growDuration = 20000;
+
+        point.y += 0.1;
+
+        entityEl.setAttribute("material", "color", "#346abf");
+        entityEl.setAttribute("position", point);
+        entityEl.setAttribute("scale", "0.1 0.1 0.1");
+        entityEl.setAttribute(
+          "animation",
+          `property: scale; to: 1 1 1; dur: ${growDuration}; easing: easeInOutQuad;`
+        );
+        entityEl.setAttribute(
+          "animation__2",
+          `property: position; to: ${point.x} ${point.y + radius} ${
+            point.z
+          }; dur: ${growDuration}; easing: easeInOutCubic;`
+        );
       }
     </script>
   </body>
