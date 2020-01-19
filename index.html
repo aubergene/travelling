@@ -46,51 +46,6 @@
         }
       });
 
-      // AFRAME.registerComponent("raycaster-listen", {
-      //   init: function() {
-      //     // Use events to figure out what raycaster is listening so we don't have to
-      //     // hardcode the raycaster.
-      //     this.el.addEventListener("raycaster-intersected", evt => {
-      //       this.raycaster = evt.detail.el;
-      //     });
-      //     this.el.addEventListener("raycaster-intersected-cleared", evt => {
-      //       this.raycaster = null;
-      //     });
-
-      //     this.leftPoint = document.querySelector("#left-point");
-      //     this.rightPoint = document.querySelector("#right-point");
-      //     this.viewPoint = document.querySelector("#view-point");
-      //   },
-
-      //   tick: function() {
-      //     if (!this.raycaster) {
-      //       return;
-      //     } // Not intersecting.
-
-      //     let intersection = this.raycaster.components.raycaster.getIntersection(
-      //       this.el
-      //     );
-      //     if (!intersection) {
-      //       return;
-      //     }
-      //     //   console.log(this.raycaster);
-      //     //   console.log(intersection.point);
-      //     const p = intersection.point;
-
-      //     if (this.raycaster.id === "left-hand") {
-      //       this.leftPoint.object3D.position.set(p.x, p.y, p.z);
-      //     }
-
-      //     if (this.raycaster.id === "right-hand") {
-      //       this.rightPoint.object3D.position.set(p.x, p.y, p.z);
-      //     }
-
-      //     if (this.raycaster.id === "cursor") {
-      //       this.viewPoint.object3D.position.set(p.x, p.y, p.z);
-      //     }
-      //   }
-      // });
-
       AFRAME.registerComponent("modify-materials", {
         init: function() {
           // Wait for model to load.
@@ -160,13 +115,6 @@
           id="zap"
           src="assets/sounds/Gun Silencer-SoundBible.com-193331132.mp3"
           poolsize="2"
-          preload="auto"
-        ></audio>
-
-        <audio
-          id="explode"
-          src="assets/sounds/explosion_distant_003.mp3"
-          poolsize="5"
           preload="auto"
         ></audio>
       </a-assets>
